@@ -37,8 +37,8 @@ A registry entry must identify something users can actually connect to or run:
 - Do not submit an unpublished package, private repository, placeholder package name, unrelated npm
   package, or a full application without a stable standalone MCP command or endpoint.
 
-Reviewers verify metadata from primary sources. They do not install or execute contributed MCP
-packages during review.
+Reviewers validate contributed registry JSON. They do not install, execute, or probe contributed
+MCP packages and services during review; contributors remain responsible for metadata accuracy.
 
 ## Local Package Example
 

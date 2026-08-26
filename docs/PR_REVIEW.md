@@ -1,7 +1,7 @@
 # Registry Pull Request Review
 
-Registry pull requests are reviewed in two stages: deterministic validation and an agent review.
-Passing CI is required, but it is not sufficient for merging.
+Registry pull requests are reviewed through deterministic JSON validation. Passing CI and trusted
+validation against the latest `main` are required for merging.
 
 ## Registry Rules
 
@@ -32,19 +32,16 @@ Validate the complete working tree with:
 node scripts/validate-registry.mjs --all
 ```
 
-## Agent Review
+## Pull Request Review
 
 The agent reviews one pull request at a time against the latest `main`. It must:
 
-1. Record the pull request number and exact head commit SHA.
-2. Inspect every changed file and reject unrelated repository, workflow, or dependency changes.
-3. Run the trusted validator from `main` against a detached worktree containing the pull request.
-4. Verify package or repository ownership, license, remote domain, configuration claims, and
-   duplicates that are not fully covered by deterministic validation.
-5. Never install or execute a package submitted by a pull request.
-6. Present a review report containing the verdict, head SHA, changed files, checks, warnings, and
-   proposed merge method.
-7. Ask for explicit approval to merge that pull request at that head SHA.
+1. Inspect every changed file and reject unrelated repository, workflow, or dependency changes.
+2. Run the trusted validator from `main` against a detached worktree containing the pull request.
+3. Never install or execute a package, or probe a remote service, submitted by a pull request.
+4. Present a review report containing the verdict, changed files, checks, warnings, and proposed
+   merge method.
+5. Ask for explicit approval to merge the pull request.
 
 An invalid pull request is reported with blocking findings and is not offered for merge. Posting a
 review comment, closing a pull request, or modifying a contributor branch requires separate user
@@ -63,20 +60,17 @@ git worktree remove "$review_dir"
 
 ## Merge Approval
 
-Approval applies to one pull request and one head SHA. Immediately before merging, the agent must
-refresh the pull request and confirm that:
+Immediately before merging, the agent refreshes the pull request and confirms that:
 
-- the head SHA is unchanged;
 - the pull request is not a draft;
 - required checks passed;
 - the pull request is mergeable and has no unresolved blocking discussion;
 - the key remains unique against the latest `main`.
 
-If any of these conditions changed, the approval expires and the agent must present a new report.
-An approved registry pull request is squash-merged with head matching enabled:
+An approved registry pull request is squash-merged:
 
 ```bash
-gh pr merge <number> --squash --match-head-commit <full-head-sha>
+gh pr merge <number> --squash
 ```
 
 The agent must not use `--admin` or `--auto`. After merging, it reports the resulting commit and
