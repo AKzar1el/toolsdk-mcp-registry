@@ -11,5 +11,6 @@ workflow and its read-only helper scripts.
   authorizing that specific action.
 - Before an approved merge, refresh the pull request state and validation result.
 - Use squash merge. Never bypass checks with `--admin`.
-- Review and merge pull requests serially against the latest `main` so key collision checks remain
-  current.
+- Review pull requests in parallel when useful. PRs with pairwise-disjoint changed paths and
+  registry identities may submit squash merges concurrently; retry GitHub's transient
+  `Base branch was modified` rejection after another merge lands.

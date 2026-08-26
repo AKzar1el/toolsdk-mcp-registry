@@ -34,7 +34,8 @@ node scripts/validate-registry.mjs --all
 
 ## Pull Request Review
 
-The agent reviews one pull request at a time against the latest `main`. It must:
+The deterministic reviewer may validate independent pull requests in parallel against `main`. It
+must:
 
 1. Inspect every changed file and reject unrelated repository, workflow, or dependency changes.
 2. Run the trusted validator from `main` against a detached worktree containing the pull request.
@@ -74,4 +75,6 @@ gh pr merge <number> --squash
 ```
 
 The agent must not use `--admin` or `--auto`. After merging, it reports the resulting commit and
-refreshes `main` before reviewing the next pull request.
+refreshes `main` before validating a new batch. Pull requests with pairwise-disjoint changed paths
+and registry identities may submit squash merges concurrently; retry GitHub's transient
+`Base branch was modified` rejection after another merge lands.

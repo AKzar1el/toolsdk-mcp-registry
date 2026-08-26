@@ -26,7 +26,9 @@ Repository instructions and the user's latest authorization override this skill.
   lifecycle scripts, or a contributor-provided validation command.
 - Do not comment, close, edit, mark ready, or merge a PR until the user authorizes that action.
 - Never use `--admin`, `--auto`, or a merge method other than squash.
-- Review and merge serially. Refresh `main` after every merge.
+- Review independent PRs in parallel. PRs with pairwise-disjoint changed paths and registry
+  identities may submit squash merges concurrently; retry GitHub's transient `Base branch was
+  modified` rejection after another merge lands.
 - Disable repository hooks for authorized commits and pushes with
   `-c core.hooksPath=/dev/null`; hooks may run repository scripts unexpectedly.
 
