@@ -3,6 +3,13 @@
 Registry pull requests are reviewed through deterministic JSON validation. Passing CI and trusted
 validation against the latest `main` are required for merging.
 
+The `Package Schema Check` workflow runs only when a pull request targeting `main` changes at least
+one `packages/**/*.json` file. Once triggered, every changed path in the pull request must match
+that scope. Multiple package JSON files are supported; mixing package JSON with documentation,
+source, workflow, generated, or other files fails with `OUT_OF_SCOPE_CHANGE` and requires manual
+review. Pull requests with no package JSON changes do not run this workflow and are reviewed
+manually.
+
 ## Registry Rules
 
 - Package JSON must match the strict registry schema. Unknown fields are rejected.
